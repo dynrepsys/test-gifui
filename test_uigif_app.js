@@ -1,4 +1,4 @@
-var Gifsocket = require('gifsockets');
+var Gifsocket = Meteor.npmRequire('gifsockets');
 
 if (Meteor.isClient) {
   // counter starts at 0
