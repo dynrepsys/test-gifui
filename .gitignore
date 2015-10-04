@@ -9,4 +9,4 @@
 # Ignore all logfiles and tempfiles.
 /log/*
 *.swp
-*.swp
+*.swo
