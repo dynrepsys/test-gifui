@@ -89,18 +89,36 @@ if (Meteor.isServer) {
             gifsocket.writeRgbaFrame(pixels, function wroteTextFrame () {
         // Send a no content response
                 console.log('wrote frame1');
-                filePath = path.join(path.resolve('.').split('server')[0],'web.browser/app/img/two.png');
-                console.log(filePath);
+                /*
                 Pngjs.decode(filePath, function(pixels) {
                     console.log(pixels.length);
                     // pixels is a 1d array (in rgba order) of decoded pixel data
                     gifsocket.writeRgbaFrame(pixels, function wroteTextFrame () {
                 // Send a no content response
-                        res.writeHead(204);
-                        res.end();
+                        //res.writeHead(204);
+                        //res.end();
                         console.log('wrote frame2');
                     });
                 });
+                */
+            });
+        });
+    });
+
+    Picker.route('/image2.gif', function(params, req, res, next) {
+        console.log("image2");
+
+        
+        var filePath = path.join(path.resolve('.').split('server')[0],'web.browser/app/img/two.png');
+        console.log(filePath);
+
+        Pngjs.decode(filePath, function(pixels) {
+            console.log(pixels.length);
+            gifsocket.writeRgbaFrame(pixels, function wroteTextFrame () {
+                        console.log('wrote frame2');
+        // Send a no content response
+                        res.writeHead(204);
+                        res.end();
             });
         });
     });

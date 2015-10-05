@@ -8,7 +8,10 @@
   {{> hello}}
 
 <img src="img/one.png"/>
-<img src="/image.gif"/>
+<img src="/image.gif" usemap="#map1"/>
+<map name="map1">
+  <area shape="rect" coords="0,0,200,200" alt="two" href="/image2.gif">
+</map>
 </body>
 
 <template name="hello">
