@@ -1,3 +1,5 @@
 {
- "gifsockets": "0.1.2"
+ "gifsockets": "0.1.2",
+ "gif-encoder": "0.4.1",
+ "png-js": "0.1.1"
 }

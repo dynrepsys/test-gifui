@@ -19,9 +19,20 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
-var path = Meteor.npmRequire('path');
-var fs = Meteor.npmRequire('fs');
-//var Gifsocket = Meteor.npmRequire('gifsockets');
+    var path = Meteor.npmRequire('path');
+    var fs = Meteor.npmRequire('fs');
+    var Gifsocket = Meteor.npmRequire('gifsockets');
+    var Gifencoder = Meteor.npmRequire('gif-encoder');
+    var Pngjs = Meteor.npmRequire('png-js');
+
+    var gifsocket = ServerSession.get('gifsocket');
+    if(!gifsocket){
+      gifsocket = new Gifsocket({
+        // #GIFSOCKET-DIMENSIONS
+        width: 200,
+        height: 200
+      });
+    }
     /*
     FlowRouter.route('/', {
         name: "root",
@@ -40,11 +51,15 @@ var fs = Meteor.npmRequire('fs');
     Picker.route('/image.gif', function(params, req, res, next) {
         console.log("image");
         res.writeHead(200, {
-//            'zconnection': 'keep-alive',
-            'Content-type': 'image/jpeg'
-//            'ztransfer-encoding': 'chunked'
+            'connection': 'keep-alive',
+            'Content-type': 'image/gif',
+            'transfer-encoding': 'chunked'
         });
-        /*filePath = path.join("", 'one.png');
+
+        gifsocket.addListener(res);
+        
+        /*
+        filePath = path.join("", 'one.png');
         console.log(filePath);
         fs.exists(filePath, function(exists){
             console.log( exists )
@@ -52,28 +67,37 @@ var fs = Meteor.npmRequire('fs');
         console.log(__meteor_bootstrap__.__dirname);
         console.log(path.resolve('.'));
         */
-        var filePath = path.join(path.resolve('.').split('server')[0],'web.browser/app/img/one.png');
+        
+        var filePath = path.join(path.resolve('.').split('server')[0],'web.browser/app/img/two.png');
         console.log(filePath);
+
         //fs.exists(filePath, function(exists ){
           //  console.log( exists );
             //console.log( filePath );
             //if(exists)
-                var data = fs.readFileSync(filePath);
-                res.write(data);
-            res.end();
-        console.log('done');
+
+        //var data = fs.readFileSync(filePath);
+        //res.write(data);
+        //res.end();
+
+        //console.log('done');
         //});
 
+        Pngjs.decode(filePath, function(pixels) {
+            console.log(pixels.length);
+            // pixels is a 1d array (in rgba order) of decoded pixel data
+            gifsocket.writeRgbaFrame(pixels, function wroteTextFrame () {
+        // Send a no content response
+                res.writeHead(204);
+                res.end();
+                console.log('wrote frame');
+            });
+        });
     });
 
   Meteor.startup(function () {
     // code to run on server at startup
-      /*
-      var gifsocket = new Gifsocket({
-        // #GIFSOCKET-DIMENSIONS
-        width: 200,
-        height: 200
-      });
-      */
+      
+      
   });
 }
