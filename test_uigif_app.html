@@ -3,19 +3,28 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
 
-  {{> hello}}
+{{> hello}}
 
-<img src="img/one.png"/>
 <img src="/image.gif" usemap="#map1"/>
+
 <map name="map1">
   <area shape="rect" coords="0,0,200,200" alt="two" href="/image2.gif">
 </map>
+
+{{> note}}
+
 </body>
 
 <template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<h2>Welcome to Micro-Applications Without Javascript (MAWoJ)!</h2>
+  <p>You should see a numeral "1" in the box below. Depending on your browser, 
+  you might need to wait until it loads.</p>
+  <p>When you see the numeral, click it once. If your browser supports scriptless 
+  micro-apps, you should see the numeral change to a "2".</p>
 </template>
 
+<template name="note">
+<p>Note that there is <span style="font-style:italic">absolutely no javascript</span> 
+running on this page that handles either the initial display or the transition event.</p>
+</template>
