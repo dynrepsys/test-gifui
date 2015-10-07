@@ -1,5 +1,6 @@
 if (Meteor.isClient) {
     // counter starts at 0
+    //--- (remove the whole counter thingy)
     Session.setDefault('counter', 0);
 
     Template.hello.helpers({
@@ -14,7 +15,6 @@ if (Meteor.isClient) {
             Session.set('counter', Session.get('counter') + 1);
         }
     });
-
 }
 
 if (Meteor.isServer) {
@@ -24,6 +24,8 @@ if (Meteor.isServer) {
     var Gifencoder = Meteor.npmRequire('gif-encoder');
     var Pngjs = Meteor.npmRequire('png-js');
 
+    // store socket in session
+    //??? is there a way to do this on client?
     var gifsocket = ServerSession.get('gifsocket');
     if (!gifsocket) {
         gifsocket = new Gifsocket({
@@ -32,21 +34,9 @@ if (Meteor.isServer) {
             height: 200
         });
     }
-    /*
-    FlowRouter.route('/', {
-        name: "root",
-        action: function(params, queryParams) {
-            FlowRouter.render('Home');
-            console.log("root");
-        }
-    });
-    FlowRouter.route('/image.gif', {
-        name: "image",
-        action: function(params, queryParams) {
-            console.log("image");
-        }
-    });
-    */
+
+    // need to handle a route as if this was not Meteor
+
     Picker.route('/image.gif', function(params, req, res, next) {
         console.log("image");
         res.writeHead(200, {
@@ -55,58 +45,25 @@ if (Meteor.isServer) {
             'transfer-encoding': 'chunked'
         });
 
-        gifsocket.addListener(res);
+        gifsocket.addListener(res); //!!! stored
 
-        /*
-        filePath = path.join("", 'one.png');
+        var filePath = path.join(path.resolve('.').split('server')[0], 'web.browser/app/img/one.png'); //??? ugh is there a better way to do this on meteor.com?
         console.log(filePath);
-        fs.exists(filePath, function(exists){
-            console.log( exists )
-        });
-        console.log(__meteor_bootstrap__.__dirname);
-        console.log(path.resolve('.'));
-        */
-
-        var filePath = path.join(path.resolve('.').split('server')[0], 'web.browser/app/img/one.png');
-        console.log(filePath);
-
-        //fs.exists(filePath, function(exists ){
-        //  console.log( exists );
-        //console.log( filePath );
-        //if(exists)
-
-        //var data = fs.readFileSync(filePath);
-        //res.write(data);
-        //res.end();
-
-        //console.log('done');
-        //});
 
         Pngjs.decode(filePath, function(pixels) {
             console.log(pixels.length);
             // pixels is a 1d array (in rgba order) of decoded pixel data
             gifsocket.writeRgbaFrame(pixels, function wroteTextFrame() {
                 // Send a no content response
-                console.log('wrote frame1');
-                /*
-                Pngjs.decode(filePath, function(pixels) {
-                    console.log(pixels.length);
-                    // pixels is a 1d array (in rgba order) of decoded pixel data
-                    gifsocket.writeRgbaFrame(pixels, function wroteTextFrame () {
-                // Send a no content response
-                        //res.writeHead(204);
-                        //res.end();
-                        console.log('wrote frame2');
-                    });
-                });
-                */
+                console.log('wrote frame1'); //--- remove comments
             });
         });
     });
 
+    //+++ back, animations, and a third connect op
+
     Picker.route('/image2.gif', function(params, req, res, next) {
         console.log("image2");
-
 
         var filePath = path.join(path.resolve('.').split('server')[0], 'web.browser/app/img/two.png');
         console.log(filePath);
@@ -124,7 +81,5 @@ if (Meteor.isServer) {
 
     Meteor.startup(function() {
         // code to run on server at startup
-
-
     });
 }
